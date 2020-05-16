@@ -3,6 +3,8 @@ from collections import OrderedDict
 from typing import List, Iterable
 from datetime import datetime, timedelta
 from nameparser import HumanName
+from aircopy.datatype import Record
+
 
 MILESTONES_TEMPLATE = [
     OrderedDict(
@@ -83,7 +85,6 @@ def get_keys(pairs: Iterable[tuple]) -> list:
 
 def gen_inst_id(name: str, mode: str):
     """Generate the key according to the name."""
-
     def gen_key_u(_name: str):
         return str(_name.lower().replace(' of ', "").replace(" ", "").replace("university", "u"))
 
@@ -110,3 +111,12 @@ def gen_inst_id(name: str, mode: str):
         raise ValueError(f"Unknown mode: {mode}")
     method = dct.get(mode)
     return method(name)
+
+
+def get_data(record: Record):
+    """Get the data in a record from the airtable api."""
+    if 'fields' not in record:
+        raise ValueError(
+            "'fields' not found in the following record {}".format(record)
+        )
+    return record.get('fields')
