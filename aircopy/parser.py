@@ -1,13 +1,12 @@
 """Parsers that parse the information queried from airtable to a pyhton dictionary following Billinge group database standard."""
 from collections import OrderedDict
 from airtable import Airtable
-from typing import List, Dict, Union, Tuple
+from typing import List, Any, Tuple
 import aircopy.tools as tools
+from aircopy.datatype import Record, Pair
 
 import uuid
 
-Record = Dict[str, Union[str, list, dict]]
-Pair = Tuple[str, dict]
 DEFAULT = {
     'pi_id': 'sbillinge',
     'name': '',
@@ -15,11 +14,41 @@ DEFAULT = {
 }
 
 
-def _retrieve(add_info: dict, key: str) -> Union[str, list, dict]:
+def _retrieve(add_info: dict, key: str) -> Any:
+    """Retrieve information from the dictionary. If not found, use the value in DEFAULT.
+
+    Parameters
+    ----------
+    add_info : dict
+        The addition information provided by the user.
+
+    key : str
+        The key to search inside the addition information.
+
+    Returns
+    -------
+    value : Any
+        The value from the add_info or DEFAULT or it is None.
+    """
     return add_info.get(key, DEFAULT.get(key))
 
 
 def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Tuple[Pair, Pair]]]:
+    """Parse the project record in airtable to Billinge group format. Return a key-value pair of the project and a list of key-value pairs of the people doc and institution doc in the project. The record should be denormalized at first.
+
+    Parameters
+    ----------
+    record : Record
+        The record from the airtable.
+
+    add_info : dict
+        A dictionary of the additional information.
+
+    Returns
+    -------
+
+    """
+    record = tools.get_data(record)
     peo_inst_pairs = list(map(parse_person, record.get('Collaborators', [])))
     people = [pair[0] for pair in peo_inst_pairs]
     key = record.get('Name')
@@ -44,6 +73,7 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Tuple[Pair
 
 
 def parse_person(record: Record) -> Tuple[Pair, Pair]:
+    record = tools.get_data(record)
     institutions = list(map(parse_institution, record.get('Institutions', [])))
     institution = institutions[0] if institutions else None
     key = record.get('ID')
@@ -67,6 +97,7 @@ def parse_person(record: Record) -> Tuple[Pair, Pair]:
 
 
 def parse_institution(record: Record) -> Tuple[str, dict]:
+    record = tools.get_data(record)
     key = tools.gen_inst_id(record.get('Name', ''), 'u')
     value = OrderedDict(
         {
