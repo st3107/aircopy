@@ -3,7 +3,7 @@ import pprint
 
 
 def test_parse_institution(fake_db):
-    record = fake_db.get('Collaborators')[0].get('Institutions')[0]
+    record = fake_db.get('fields').get('Collaborators')[0].get('fields').get('Institutions')[0]
     key, value = parser.parse_institution(record)
     assert key == 'uyaounde'
     assert value['name'] == 'University of Yaounde'
@@ -14,7 +14,7 @@ def test_parse_institution(fake_db):
 
 
 def test_parse_person(fake_db):
-    record = fake_db.get('Collaborators')[0]
+    record = fake_db.get('fields').get('Collaborators')[0]
     (key, value), _ = parser.parse_person(record)
     assert key == 'rnangah'
     assert value['aka'] == 'Nangah, Randy'

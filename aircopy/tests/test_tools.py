@@ -28,3 +28,7 @@ def test_get_keys():
 
 def test_gen_inst_id():
     assert tools.gen_inst_id('University of Hahaha', 'u') == 'uhahaha'
+
+
+def test_get_data(fake_db):
+    assert isinstance(tools.get_data(fake_db), dict)

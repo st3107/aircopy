@@ -1,38 +1,51 @@
 import pytest
 from collections import OrderedDict
+from pathlib import Path
 
 DB = {
-    'Blogroll': ['recKm29VrzmM6eyjs'],
-    'Collaborators': [{'First Name': 'Randy',
-                       'ID': 'rnangah',
-                       'Institutions': [
-                           {'Address': 'Yaounde, Cameroon',
-                            'Collaborators 2': ['rec6VLeAUdItvIqbY'],
-                            'Name': 'University of Yaounde'}
-                       ],
-                       'Last Name': 'Nangah',
-                       'Manuscripts': ['recoZh0EL9qM0ufyD'],
-                       'Projects': ['rec6UVonazWUS1h94']}],
-    'Grant': ['dmrefcheme16'],
-    'Link to Analysis': 'http://gitlab.thebillingegroup.com/analysis/19st_sponge',
-    'Link to Paper': 'http://gitlab.thebillingegroup.com/papers/19st_sponge',
-    'Manuscripts': ['recoZh0EL9qM0ufyD'],
-    'Name': '19st_sponge',
-    'Notes': 'la la la ...',
-    'Project Lead': 'Songsheng Tao',
-    'Samples': ['rec0Rnl9YH7h8aw33',
-                'recCOTctyb1eJXqG3',
-                'recAC9R3jPzuEn1gJ',
-                'recd8drZvs0yfRUCt'],
-    'Start Date': '2019-03-04',
-    'Status': '6 Report Sent'
+    'createdTime': '2019-03-04T15:42:21.000Z',
+    'fields': {'Blogroll': ['recKm29VrzmM6eyjs'],
+               'Collaborators': [{'createdTime': '2019-03-02T15:40:28.000Z',
+                                  'fields': {'First Name': 'Randy',
+                                             'ID': 'rnangah',
+                                             'Institutions': [{'createdTime': '2019-03-04T16:00:32.000Z',
+                                                               'fields': {'Address': 'Yaounde, Cameroon',
+                                                                          'Collaborators 2': ['rec6VLeAUdItvIqbY'],
+                                                                          'Name': 'University of Yaounde'},
+                                                               'id': 'recFoBBdAy3cLxwYC'}],
+                                             'Last Name': 'Nangah',
+                                             'Manuscripts': ['recoZh0EL9qM0ufyD'],
+                                             'Projects': ['rec6UVonazWUS1h94']},
+                                  'id': 'rec6VLeAUdItvIqbY'}],
+               'Grant': ['dmrefcheme16'],
+               'Link to Analysis': 'http://gitlab.thebillingegroup.com/analysis/19st_sponge',
+               'Link to Paper': 'http://gitlab.thebillingegroup.com/papers/19st_sponge',
+               'Manuscripts': ['recoZh0EL9qM0ufyD'],
+               'Name': '19st_sponge',
+               'Notes': 'I am from Cameroon, currently working as a research '
+                        'assistant for the Ministry of Scientific Research and '
+                        'Innovation, and doing my PhD at the Department of '
+                        'Inorganic Chemistry, University of Yaounde I, Yaounde, '
+                        'Cameroon. ',
+               'Project Lead': 'Songsheng Tao',
+               'Samples': ['rec0Rnl9YH7h8aw33',
+                           'recCOTctyb1eJXqG3',
+                           'recAC9R3jPzuEn1gJ',
+                           'recd8drZvs0yfRUCt'],
+               'Start Date': '2019-03-04',
+               'Status': '6 Report Sent'},
+    'id': 'rec6UVonazWUS1h94'
 }
 
 PROJECT = OrderedDict(
     [
         ('begin_date', '2019-03-04'),
         ('collaborators', ['rnangah']),
-        ('description', 'la la la ...'),
+        ('description', 'I am from Cameroon, currently working as a research '
+                        'assistant for the Ministry of Scientific Research and '
+                        'Innovation, and doing my PhD at the Department of '
+                        'Inorganic Chemistry, University of Yaounde I, Yaounde, '
+                        'Cameroon. '),
         ('grants', ['dmrefcheme16']),
         ('group_members', ['sstao']),
         ('lead', 'sstao'),
@@ -85,3 +98,15 @@ def fake_db():
 @pytest.fixture
 def example_project():
     return PROJECT
+
+
+@pytest.fixture
+def real_db():
+    token_file = Path(__file__).parent.joinpath('token.json')
+    if token_file.exists():
+        import json
+        from aircopy.database import DataBase
+        with token_file.open('r') as f:
+            info = json.load(f)
+        return DataBase(info['base_id'], info['tables'], api_token=info['api_token'])
+    return None
