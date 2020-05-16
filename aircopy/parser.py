@@ -46,7 +46,14 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
 
     Returns
     -------
+    project : tuple
+        The key-value pair of project document.
 
+    people : list
+        The list of the key-value pairs of the people in the collaborators list.
+
+    institutions : list
+        The list of the key-value pairs of the institutions of those collaborators.
     """
     record = tools.get_data(record)
     pairs = list(map(parse_person, record.get('Collaborators', [])))
