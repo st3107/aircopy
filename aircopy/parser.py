@@ -33,7 +33,7 @@ def _retrieve(add_info: dict, key: str) -> Any:
     return add_info.get(key, DEFAULT.get(key))
 
 
-def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Tuple[Pair, Pair]]]:
+def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], List[Pair]]:
     """Parse the project record in airtable to Billinge group format. Return a key-value pair of the project and a list of key-value pairs of the people doc and institution doc in the project. The record should be denormalized at first.
 
     Parameters
@@ -49,8 +49,9 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Tuple[Pair
 
     """
     record = tools.get_data(record)
-    peo_inst_pairs = list(map(parse_person, record.get('Collaborators', [])))
-    people = [pair[0] for pair in peo_inst_pairs]
+    pairs = list(map(parse_person, record.get('Collaborators', [])))
+    people = [pair[0] for pair in pairs]
+    institutions = [pair[1] for pair in pairs]
     key = record.get('Name')
     value = OrderedDict(
         {
@@ -69,7 +70,7 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Tuple[Pair
             'status': record.get('Status')
         }
     )
-    return (key, value), peo_inst_pairs
+    return (key, value), people, institutions
 
 
 def parse_person(record: Record) -> Tuple[Pair, Pair]:

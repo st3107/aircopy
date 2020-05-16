@@ -25,6 +25,6 @@ def test_parse_person(fake_db):
 
 def test_parse_project(fake_db, example_project):
     record = fake_db
-    (key, value), _ = parser.parse_project(record, {})
+    (key, value), _, _ = parser.parse_project(record, {})
     assert key == '19st_sponge'
     assert value == example_project
