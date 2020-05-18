@@ -1,6 +1,6 @@
 """Tools used in the module."""
 from collections import OrderedDict
-from typing import List, Iterable
+from typing import List, Iterable, Union
 from datetime import datetime, timedelta
 from nameparser import HumanName
 from aircopy.datatype import Record
@@ -42,8 +42,10 @@ SPECIAL_ID = {
 }
 
 
-def gen_person_id(name: str) -> str:
+def gen_person_id(name: str) -> Union[str, None]:
     """Generate the id of the person."""
+    if name is None:
+        return
     if name in SPECIAL_ID:
         return SPECIAL_ID.get(name)
     hn = HumanName(name)

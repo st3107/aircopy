@@ -1,5 +1,4 @@
 import aircopy.parser as parser
-import pprint
 
 
 def test_parse_institution(fake_db):

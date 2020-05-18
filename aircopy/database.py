@@ -4,6 +4,8 @@ from aircopy.datatype import Record
 import aircopy.tools as tools
 import copy
 from typing import Union, List
+import aircopy.parser as parser
+from typing import Generator
 
 
 def query(db: Airtable, uid: str, only_data: bool):
@@ -65,14 +67,65 @@ def denormalize_project(project: Record, people: Airtable, institutions: Airtabl
             for uid in project['Collaborators']
         ]
         for collaborator in project['Collaborators']:
-            if 'Institutions' in collaborator:
-                collaborator['Institutions'] = [
-                    query(institutions, uid, only_data=only_data)
-                    for uid in collaborator['Institutions']
-                ]
+            fields = tools.get_data(collaborator) if not only_data else collaborator
+            fields['Institutions'] = [
+                query(institutions, uid, only_data=only_data)
+                for uid in fields['Institutions']
+            ]
     if not inplace:
         return project
     return
+
+
+def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtable, add_info: dict, **options) -> Generator:
+    """Generate the projecta documents and the documents of contacts and institutions from airtbale database.
+
+    Parameters
+    ----------
+    projects : Airtable
+        The Projects database.
+
+    people : Airtable
+        The People database.
+
+    institutions : Airtable
+        The institutions database.
+
+    add_info : dict
+        A dictionary of the additional information.
+
+    options : dict
+        The view and filter options. Include
+            max_records (``int``, optional): The maximum total number of
+                records that will be returned. See :any:`MaxRecordsParam`
+            view (``str``, optional): The name or ID of a view.
+                See :any:`ViewParam`.
+            page_size (``int``, optional ): The number of records returned
+                in each request. Must be less than or equal to 100.
+                Default is 100. See :any:`PageSizeParam`.
+            fields (``str``, ``list``, optional): Name of field or fields to
+                be retrieved. Default is all fields. See :any:`FieldsParam`.
+            sort (``list``, optional): List of fields to sort by.
+                Default order is ascending. See :any:`SortParam`.
+            formula (``str``, optional): Airtable formula.
+                See :any:`FormulaParam`.
+
+    Yields
+    ------
+    project : tuple
+        The key-value pair of project document.
+
+    people : list
+        The list of the key-value pairs of the people in the collaborators list.
+
+    institutions : list
+        The list of the key-value pairs of the institutions of those collaborators.
+    """
+    for page in projects.get_iter(**options):
+        for record in page:
+            denormalize_project(record, people, institutions, inplace=True)
+            project, people, institutions = parser.parse_project(record, add_info)
+            yield project, people, institutions
 
 
 class DataBase:
@@ -91,3 +144,40 @@ class DataBase:
         """
         for table in tables:
             self.__setattr__(table, Airtable(base_id, table, api_key=api_token))
+
+    def get_projecta(self, add_info: dict, **options) -> Generator:
+        """Generate the projecta documents and the documents of contacts and institutions from airtbale database.
+
+        Parameters
+        ----------
+        add_info : dict
+            A dictionary of the additional information.
+
+        options : dict
+            The view and filter options. Include
+                max_records (``int``, optional): The maximum total number of
+                    records that will be returned. See :any:`MaxRecordsParam`
+                view (``str``, optional): The name or ID of a view.
+                    See :any:`ViewParam`.
+                page_size (``int``, optional ): The number of records returned
+                    in each request. Must be less than or equal to 100.
+                    Default is 100. See :any:`PageSizeParam`.
+                fields (``str``, ``list``, optional): Name of field or fields to
+                    be retrieved. Default is all fields. See :any:`FieldsParam`.
+                sort (``list``, optional): List of fields to sort by.
+                    Default order is ascending. See :any:`SortParam`.
+                formula (``str``, optional): Airtable formula.
+                    See :any:`FormulaParam`.
+
+        Yields
+        ------
+        project : tuple
+            The key-value pair of project document.
+
+        people : list
+            The list of the key-value pairs of the people in the collaborators list.
+
+        institutions : list
+            The list of the key-value pairs of the institutions of those collaborators.
+        """
+        yield from get_projecta_docs(getattr(self, 'Projects'), getattr(self, 'People'), getattr(self, 'Institutions'), add_info, **options)
