@@ -81,6 +81,21 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
 
 
 def parse_person(record: Record) -> Tuple[Pair, Pair]:
+    """Parse the person information in the People airtable to the contact and institution document.
+
+    Parameters
+    ----------
+    record : Record
+        The record from the airtable.
+
+    Returns
+    -------
+    contact : tuple
+        The key-value pair of the contact document.
+
+    institution : tuple
+        The key-value pair of the institution document.
+    """
     record = tools.get_data(record)
     institutions = list(map(parse_institution, record.get('Institutions', [])))
     institution = institutions[0] if institutions else None
@@ -105,6 +120,18 @@ def parse_person(record: Record) -> Tuple[Pair, Pair]:
 
 
 def parse_institution(record: Record) -> Tuple[str, dict]:
+    """Parse the record from the Institutions airtbale to the institution documents.
+
+    Parameters
+    ----------
+    record : Record
+        The record from the airtable.
+
+    Returns
+    -------
+    institution : tuple
+        The key-value pair of the institution document.
+    """
     record = tools.get_data(record)
     key = tools.gen_inst_id(record.get('Name', ''), 'u')
     value = OrderedDict(
@@ -118,13 +145,3 @@ def parse_institution(record: Record) -> Tuple[str, dict]:
     )
     tools.tag_date(value)
     return key, value
-
-
-if __name__ == "__main__":
-    import pprint
-    at = Airtable('appQbMUE26cMSSKdr', 'People', api_key='keyLPD6r72jho8O02')
-    at1 = Airtable('appQbMUE26cMSSKdr', 'Projects', api_key='keyLPD6r72jho8O02')
-    at2 = Airtable('appQbMUE26cMSSKdr', 'Institutions', api_key='keyLPD6r72jho8O02')
-    pprint.pprint(at2.get('recFoBBdAy3cLxwYC'))
-    pprint.pprint(at.get('rec6VLeAUdItvIqbY'))
-    pprint.pprint(at1.get('rec6UVonazWUS1h94'))
