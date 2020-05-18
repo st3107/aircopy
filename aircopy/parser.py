@@ -77,7 +77,8 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
             'status': record.get('Status')
         }
     )
-    return (key, value), people, institutions
+    project = (key, value)
+    return project, people, institutions
 
 
 def parse_person(record: Record) -> Tuple[Pair, Pair]:
@@ -116,7 +117,8 @@ def parse_person(record: Record) -> Tuple[Pair, Pair]:
         }
     )
     tools.tag_date(value)
-    return (key, value), institution
+    contact = (key, value)
+    return contact, institution
 
 
 def parse_institution(record: Record) -> Tuple[str, dict]:
@@ -144,4 +146,5 @@ def parse_institution(record: Record) -> Tuple[str, dict]:
         }
     )
     tools.tag_date(value)
-    return key, value
+    institution = (key, value)
+    return institution
