@@ -69,10 +69,13 @@ def denormalize_project(project: Record, people: Airtable, institutions: Airtabl
         ]
         for collaborator in project['Collaborators']:
             fields = tools.get_data(collaborator) if not only_data else collaborator
-            fields['Institutions'] = [
-                query(institutions, uid, only_data=only_data)
-                for uid in fields['Institutions']
-            ]
+            if 'Institutions' not in fields:
+                fields['Institutions'] = []
+            else:
+                fields['Institutions'] = [
+                    query(institutions, uid, only_data=only_data)
+                    for uid in fields['Institutions']
+                ]
     if not inplace:
         return project
     return
@@ -125,8 +128,8 @@ def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtab
     for page in projects.get_iter(**options):
         for record in page:
             denormalize_project(record, people, institutions, inplace=True)
-            project, people, institutions = parser.parse_project(record, add_info)
-            yield project, people, institutions
+            _project, _people, _institutions = parser.parse_project(record, add_info)
+            yield _project, _people, _institutions
 
 
 class DataBase:

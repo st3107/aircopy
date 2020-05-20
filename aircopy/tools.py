@@ -1,40 +1,40 @@
 """Tools used in the module."""
-from collections import OrderedDict
-from typing import List, Iterable, Union
+import copy
 from datetime import datetime, timedelta
+from typing import List, Iterable, Union
+
 from nameparser import HumanName
+
 from aircopy.datatype import Record
 
-
 MILESTONES_TEMPLATE = [
-    OrderedDict(
-        {'audience': ['pi', 'lead', 'group members', 'collaborators'],
-         'due_date': timedelta(days=7),
-         'name': 'Kick off meeting',
-         'objective': 'roll out of project to team',
-         'status': 'proposed'}
-    ),
-    OrderedDict(
-        {'audience': ['pi', 'lead', 'group members'],
-         'due_date': timedelta(days=14),
-         'name': 'Project lead presentation',
-         'objective': 'lead presents background reading and initial project plan',
-         'status': 'proposed'}
-    ),
-    OrderedDict(
-        {'audience': ['pi', 'lead', 'group members'],
-         'due_date': timedelta(days=28),
-         'name': 'planning meeting',
-         'objective': 'develop a detailed plan with dates',
-         'status': 'proposed'}
-    ),
-    OrderedDict(
-        {'audience': ['pi', 'lead', 'group members', 'collaborators'],
-         'due_date': timedelta(days=365),
-         'name': 'submission',
-         'objective': 'submit the paper, release the code, whatever',
-         'status': 'proposed'}
-    )
+    {
+        'audience': ['pi', 'lead', 'group members', 'collaborators'],
+        'due_date': timedelta(days=7),
+        'name': 'Kick off meeting',
+        'objective': 'roll out of project to team',
+        'status': 'proposed'
+    },
+    {
+        'audience': ['pi', 'lead', 'group members'],
+        'due_date': timedelta(days=14),
+        'name': 'Project lead presentation',
+        'objective': 'lead presents background reading and initial project plan',
+        'status': 'proposed'
+    },
+    {
+        'audience': ['pi', 'lead', 'group members'],
+        'due_date': timedelta(days=28),
+        'name': 'planning meeting',
+        'objective': 'develop a detailed plan with dates',
+        'status': 'proposed'
+    },
+    {
+        'audience': ['pi', 'lead', 'group members', 'collaborators'],
+        'due_date': timedelta(days=365),
+        'name': 'submission',
+        'objective': 'submit the paper, release the code, whatever',
+        'status': 'proposed'}
 ]
 
 SPECIAL_ID = {
@@ -52,10 +52,10 @@ def gen_person_id(name: str) -> Union[str, None]:
     return '{}{}'.format(hn.first[0], hn.last).lower()
 
 
-def auto_gen_milestons(start_date: str, template: List[dict] = None) -> List[OrderedDict]:
+def auto_gen_milestons(start_date: str, template: List[dict] = None) -> List[dict]:
     """Automatically generate the milestones list according to the template."""
     if template is None:
-        template = MILESTONES_TEMPLATE.copy()
+        template = copy.deepcopy(MILESTONES_TEMPLATE)
     start_date = datetime.strptime(start_date, '%Y-%m-%d')
     for milestone in template:
         time_gap = milestone['due_date']
@@ -86,7 +86,8 @@ def get_keys(pairs: Iterable[tuple]) -> list:
 
 
 def gen_inst_id(name: str, mode: str):
-    """Generate the key according to the name."""
+    """Generate the key according to the name. Four mode u, d, s, auto."""
+
     def gen_key_u(_name: str):
         return str(_name.lower().replace(' of ', "").replace(" ", "").replace("university", "u"))
 
@@ -104,13 +105,23 @@ def gen_inst_id(name: str, mode: str):
         else:
             return ''.join(_name.split())
 
+    def auto_mode(_name: str):
+        _name = _name.lower()
+        if "school" in _name:
+            return 's'
+        if "department" in _name:
+            return 'd'
+        return 'u'
+
     dct = {
         'u': gen_key_u,
         'd': gen_key_d,
         's': gen_key_s
     }
-    if mode not in dct:
+    if mode not in dct and mode != 'auto':
         raise ValueError(f"Unknown mode: {mode}")
+    if mode == 'auto':
+        mode = auto_mode(name)
     method = dct.get(mode)
     return method(name)
 

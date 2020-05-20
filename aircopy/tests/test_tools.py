@@ -1,4 +1,3 @@
-from datetime import datetime
 import aircopy.tools as tools
 
 
@@ -27,7 +26,9 @@ def test_get_keys():
 
 
 def test_gen_inst_id():
-    assert tools.gen_inst_id('University of Hahaha', 'u') == 'uhahaha'
+    assert tools.gen_inst_id('University of Hahaha', 'auto') == 'uhahaha'
+    assert tools.gen_inst_id('Department of Hahaha, University of Hahaha', 'auto') == 'hahaha,universityofhahaha'
+    assert tools.gen_inst_id('School of Hahaha, University of Hahaha', 'auto') == 'hahaha,universityofhahaha'
 
 
 def test_get_data(fake_db):

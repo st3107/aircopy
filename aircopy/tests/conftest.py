@@ -1,6 +1,10 @@
-import pytest
 from collections import OrderedDict
 from pathlib import Path
+from typing import Union
+
+import pytest
+
+from aircopy.database import DataBase
 
 DB = {
     'createdTime': '2019-03-04T15:42:21.000Z',
@@ -91,22 +95,28 @@ PROJECT = OrderedDict(
 
 
 @pytest.fixture
-def fake_db():
+def fake_db() -> dict:
     return DB
 
 
 @pytest.fixture
-def example_project():
+def example_project() -> OrderedDict:
     return PROJECT
 
 
 @pytest.fixture
-def real_db():
+def real_db_config() -> Union[None, dict]:
     token_file = Path(__file__).parent.joinpath('token.json')
     if token_file.exists():
         import json
-        from aircopy.database import DataBase
         with token_file.open('r') as f:
             info = json.load(f)
-        return DataBase(info['base_id'], info['tables'], api_token=info['api_token'])
+        return info
+    return None
+
+
+@pytest.fixture
+def real_db() -> Union[None, DataBase]:
+    if real_db_config is not None:
+        return DataBase(real_db_config['base_id'], real_db_config['tables'], api_token=real_db_config['api_token'])
     return None

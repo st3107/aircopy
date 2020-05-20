@@ -1,11 +1,9 @@
 """Parsers that parse the information queried from airtable to a pyhton dictionary following Billinge group database standard."""
-from collections import OrderedDict
-from airtable import Airtable
+import uuid
 from typing import List, Any, Tuple
+
 import aircopy.tools as tools
 from aircopy.datatype import Record, Pair
-
-import uuid
 
 DEFAULT = {
     'pi_id': 'sbillinge',
@@ -57,26 +55,24 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
     """
     record = tools.get_data(record)
     pairs = list(map(parse_person, record.get('Collaborators', [])))
-    people = [pair[0] for pair in pairs]
-    institutions = [pair[1] for pair in pairs]
+    people = [pair[0] for pair in pairs if pair[0] is not None]
+    institutions = [pair[1] for pair in pairs if pair[1] is not None]
     key = record.get('Name')
-    value = OrderedDict(
-        {
-            'begin_date': record.get('Start Date'),
-            'collaborators': tools.get_keys(people),
-            'description': record.get('Notes'),
-            'grants': record.get('Grant'),
-            'group_members': [tools.gen_person_id(record.get('Project Lead'))],
-            'lead': tools.gen_person_id(record.get('Project Lead')),
-            'log_url': _retrieve(add_info, 'log_url'),
-            'ana_repo_url': record.get('Link to Analysis'),
-            'man_repo_url': record.get('Link to Paper'),
-            'milestones': tools.auto_gen_milestons(record.get('Start Date')),
+    value = {
+        'begin_date': record.get('Start Date'),
+        'collaborators': tools.get_keys(people),
+        'description': record.get('Notes'),
+        'grants': record.get('Grant'),
+        'group_members': [tools.gen_person_id(record.get('Project Lead'))],
+        'lead': tools.gen_person_id(record.get('Project Lead')),
+        'log_url': _retrieve(add_info, 'log_url'),
+        'ana_repo_url': record.get('Link to Analysis'),
+        'man_repo_url': record.get('Link to Paper'),
+        'milestones': tools.auto_gen_milestons(record.get('Start Date')),
             'name': _retrieve(add_info, 'name'),
             'pi_id': _retrieve(add_info, 'pi_id'),
             'status': record.get('Status')
-        }
-    )
+    }
     project = (key, value)
     return project, people, institutions
 
@@ -101,21 +97,19 @@ def parse_person(record: Record) -> Tuple[Pair, Pair]:
     institutions = list(map(parse_institution, record.get('Institutions', [])))
     institution = institutions[0] if institutions else None
     key = record.get('ID')
-    value = OrderedDict(
-        {
-            'name': '{} {}'.format(
-                record.get('First Name'),
-                record.get('Last Name')
-            ),
-            'aka': '{}, {}'.format(
-                record.get('Last Name'),
-                record.get('First Name')
-            ),
-            'institution': institution[0] if institution else None,
-            'notes': [],
-            'uuid': uuid.uuid4()
-        }
-    )
+    value = {
+        'name': '{} {}'.format(
+            record.get('First Name'),
+            record.get('Last Name')
+        ),
+        'aka': '{}, {}'.format(
+            record.get('Last Name'),
+            record.get('First Name')
+        ),
+        'institution': institution[0] if institution else None,
+        'notes': [],
+        'uuid': str(uuid.uuid4())
+    }
     tools.tag_date(value)
     contact = (key, value)
     return contact, institution
@@ -135,16 +129,14 @@ def parse_institution(record: Record) -> Tuple[str, dict]:
         The key-value pair of the institution document.
     """
     record = tools.get_data(record)
-    key = tools.gen_inst_id(record.get('Name', ''), 'u')
-    value = OrderedDict(
-        {
-            'aka': [],
-            'city': record.get('Address'),
-            'state': record.get('State'),
-            'county': record.get('County'),
-            'name': record.get('Name')
-        }
-    )
+    key = tools.gen_inst_id(record.get('Name', ''), mode='auto')
+    value = {
+        'aka': [],
+        'city': record.get('Address'),
+        'state': record.get('State'),
+        'county': record.get('County'),
+        'name': record.get('Name')
+    }
     tools.tag_date(value)
     institution = (key, value)
     return institution
