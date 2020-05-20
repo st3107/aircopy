@@ -117,6 +117,7 @@ def real_db_config() -> Union[None, dict]:
 
 @pytest.fixture
 def real_db() -> Union[None, DataBase]:
-    if real_db_config is not None:
-        return DataBase(real_db_config['base_id'], real_db_config['tables'], api_token=real_db_config['api_token'])
+    db_config = real_db_config()
+    if db_config is not None:
+        return DataBase(db_config['base_id'], db_config['tables'], api_token=db_config['api_token'])
     return None
