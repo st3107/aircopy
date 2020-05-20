@@ -69,9 +69,9 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
         'ana_repo_url': record.get('Link to Analysis'),
         'man_repo_url': record.get('Link to Paper'),
         'milestones': tools.auto_gen_milestons(record.get('Start Date')),
-            'name': _retrieve(add_info, 'name'),
-            'pi_id': _retrieve(add_info, 'pi_id'),
-            'status': record.get('Status')
+        'name': _retrieve(add_info, 'name'),
+        'pi_id': _retrieve(add_info, 'pi_id'),
+        'status': record.get('Status')
     }
     project = (key, value)
     return project, people, institutions

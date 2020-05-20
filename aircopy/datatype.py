@@ -1,5 +1,5 @@
 """Some definitions of datatype used in the module."""
-from typing import List, Tuple, Dict, Union, Any
+from typing import Tuple, Dict, Union, Any
 
 # The record queried from the airtable
 Fields = Dict[str, Any]

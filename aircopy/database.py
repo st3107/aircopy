@@ -34,7 +34,8 @@ def query(db: Airtable, uid: str, only_data: bool):
     return record
 
 
-def denormalize_project(project: Record, people: Airtable, institutions: Airtable, only_data: bool = False, inplace: bool = False) -> Union[None, dict]:
+def denormalize_project(project: Record, people: Airtable, institutions: Airtable, only_data: bool = False,
+                        inplace: bool = False) -> Union[None, dict]:
     """Denormalize the project record from airtbale.
 
     Parameters
@@ -81,7 +82,8 @@ def denormalize_project(project: Record, people: Airtable, institutions: Airtabl
     return
 
 
-def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtable, add_info: dict, **options) -> Generator:
+def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtable, add_info: dict,
+                      **options) -> Generator:
     """Generate the projecta documents and the documents of contacts and institutions from airtbale database.
 
     Parameters

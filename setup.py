@@ -33,7 +33,6 @@ with open(path.join(here, 'requirements.txt')) as requirements_file:
     requirements = [line for line in requirements_file.read().splitlines()
                     if not line.startswith('#')]
 
-
 setup(
     name='aircopy',
     version=versioneer.get_version(),
