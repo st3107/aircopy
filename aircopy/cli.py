@@ -14,20 +14,35 @@ def aircopy(add_info: dict = None, max_records: int = None, view: int = None, pa
 
     It will read the variables 'AIRTABLE_BASE_ID' and 'AIRTABLE_API_TOKEN' inside your environment and connect
     to your airtable database, download the content and parse it into Billinge group database documents and
-    write it out to yaml files.
+    write it out to yaml files. The yaml files will be named as "airtable_projecta.yaml", "airtable_contacts.yaml"
+    and "airtable_institutions.yaml".
 
     To use the it, you need to find the base id of your Airtable by visiting the airtable api website (
     https://airtable.com/api) and generate the api token following the instructions on the website (
     https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-). Then, export the base id
     and api token to the environment variables.
 
-    `export AIRTABLE_BASE_ID=***`
+    $ export AIRTABLE_BASE_ID=***
 
-    `export AIRTABLE_API_TOKEN=***`
+    $ export AIRTABLE_API_TOKEN=***
 
-    Then run the aircopy.
+    Or you can add these lines in your ~/.bashrc so that you don't need to repeat doing it. Then you can run the
+    aircopy.
 
-    `aircopy`
+    $ aircopy
+
+    Aircopy supports the data query options provided by the airtable. For example, if you would like to transfer
+    the project with project lead "Songsheng Tao", then you need to add the formula.
+
+    $ aircopy --formula "{Project Lead} = 'Songsheng Tao'"
+
+    For more information, please read the https://airtable.com/api to see how to use the flags.
+
+    Also, you can specify what additional information you would like to include in the projecta docs by passing
+    a dictionary to the 'add_info' flag. The keys should be inside the Billinge group projecta schemas. For
+    example, you would like your pi_id to be someone else like 'sstao' (default 'sbillinge'), you can use
+
+    $ aircopy --add_info {pi_id:sstao}
 
     Parameters
     ----------
@@ -91,7 +106,3 @@ def aircopy(add_info: dict = None, max_records: int = None, view: int = None, pa
 def main():
     """Fire aircopy."""
     fire.Fire(aircopy)
-
-
-if __name__ == "__main__":
-    main()

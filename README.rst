@@ -17,8 +17,16 @@ The CLI software to copy airtable data to Billinge group database
 Installation
 ------------
 
-Install pip on your machine.
-Run the following code in your terminal.
+Install pip on your machine. Run the following code in the terminal.
+
+``pip install aircopy``
+
+Usage
+-----
+
+Run the following command to find out the usage in the terminal.
+
+``aircopy -- --help``
 
 Features
 --------
