@@ -16,9 +16,10 @@ def aircopy(add_info: dict = None, max_records: int = None, view: int = None, pa
     airtable database, download the content and parse it into Billinge group database documents and write it out to
     yaml files.
 
-    To use the it, you need to find the base id of your Airtable and generate the api token following the instructions
-    on the website (https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-). Then, export
-    the base id and api token to the environment variables.
+    To use the it, you need to find the base id of your Airtable by visiting the airtable api website
+    (https://airtable.com/api) and generate the api token following the instructions on the website
+    (https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-).
+    Then, export the base id and api token to the environment variables.
 
     `export AIRTABLE_BASE_ID=***`
 
