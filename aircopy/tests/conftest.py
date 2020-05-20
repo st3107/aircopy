@@ -104,9 +104,10 @@ def example_project() -> OrderedDict:
     return PROJECT
 
 
-@pytest.fixture
-def real_db_config() -> Union[None, dict]:
-    token_file = Path(__file__).parent.joinpath('token.json')
+LOCAL_TOKEN_FILE = Path(__file__).parent.joinpath('token.json')
+
+
+def get_real_db_config(token_file: Path = LOCAL_TOKEN_FILE) -> Union[None, dict]:
     if token_file.exists():
         import json
         with token_file.open('r') as f:
@@ -116,8 +117,13 @@ def real_db_config() -> Union[None, dict]:
 
 
 @pytest.fixture
+def real_db_config() -> Union[None, dict]:
+    return get_real_db_config()
+
+
+@pytest.fixture
 def real_db() -> Union[None, DataBase]:
-    db_config = real_db_config()
+    db_config = get_real_db_config()
     if db_config is not None:
         return DataBase(db_config['base_id'], db_config['tables'], api_token=db_config['api_token'])
     return None

@@ -158,7 +158,7 @@ class DataBase:
         add_info : dict
             A dictionary of the additional information.
 
-        options : dict
+        options : kwargs
             The view and filter options. Include
                 max_records (``int``, optional): The maximum total number of
                     records that will be returned. See :any:`MaxRecordsParam`
