@@ -1,11 +1,12 @@
 """The tools for data operation and the wrapper for the airtable database."""
-from airtable import Airtable
-from aircopy.datatype import Record
-import aircopy.tools as tools
 import copy
-from typing import Union, List
+from typing import Union, List, Tuple, Generator
+
+from airtable import Airtable
+
 import aircopy.parser as parser
-from typing import Generator
+import aircopy.tools as tools
+from aircopy.datatype import Record
 
 
 def query(db: Airtable, uid: str, only_data: bool):
@@ -130,7 +131,8 @@ def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtab
 
 class DataBase:
     """A collection of airtables at the same base."""
-    def __init__(self, base_id: str, tables: List[str], api_token: str = None):
+
+    def __init__(self, base_id: str, tables: List[str] = ('Projects', 'People', 'Institutions'), api_token: str = None):
         """
         Initiate the class. Attributes will be added as the name of the table and its corresponding Airtable object.
 
@@ -145,7 +147,7 @@ class DataBase:
         for table in tables:
             self.__setattr__(table, Airtable(base_id, table, api_key=api_token))
 
-    def get_projecta(self, add_info: dict, **options) -> Generator:
+    def get_projecta(self, add_info: dict, **options) -> Tuple[dict, dict, dict]:
         """Generate the projecta documents and the documents of contacts and institutions from airtbale database.
 
         Parameters
@@ -169,15 +171,23 @@ class DataBase:
                 formula (``str``, optional): Airtable formula.
                     See :any:`FormulaParam`.
 
-        Yields
-        ------
-        project : tuple
-            The key-value pair of project document.
+        Returns
+        -------
+        project : dict
+            The dictionary of project documents.
 
-        people : list
-            The list of the key-value pairs of the people in the collaborators list.
+        people : dict
+            The dictionary of the people in the collaborators list.
 
-        institutions : list
-            The list of the key-value pairs of the institutions of those collaborators.
+        institutions : dict
+            The dictionary of the institutions of those collaborators.
         """
-        yield from get_projecta_docs(getattr(self, 'Projects'), getattr(self, 'People'), getattr(self, 'Institutions'), add_info, **options)
+        gen = get_projecta_docs(
+            getattr(self, 'Projects'), getattr(self, 'People'), getattr(self, 'Institutions'), add_info, **options
+        )
+        projects, people, institutions = dict(), dict(), dict()
+        for _project, _people, _institutions in gen:
+            projects.update([_project])
+            people.update(_people)
+            institutions.update(_institutions)
+        return projects, people, institutions
