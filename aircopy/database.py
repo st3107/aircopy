@@ -137,7 +137,8 @@ def get_projecta_docs(projects: Airtable, people: Airtable, institutions: Airtab
 class DataBase:
     """A collection of airtables at the same base."""
 
-    def __init__(self, base_id: str, tables: List[str] = ('Projects', 'People', 'Institutions'), api_token: str = None):
+    def __init__(self, base_id: str, tables: List[str] = ('Projects', 'People', 'Institutions'),
+                 api_token: str = None):
         """
         Initiate the class. Attributes will be added as the name of the table and its corresponding Airtable object.
 

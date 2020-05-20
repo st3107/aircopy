@@ -1,4 +1,5 @@
-"""Parsers that parse the information queried from airtable to a pyhton dictionary following Billinge group database standard."""
+"""Parsers that parse the information queried from airtable to a pyhton dictionary following Billinge group
+database standard."""
 import uuid
 from typing import List, Any, Tuple
 
@@ -32,7 +33,10 @@ def _retrieve(add_info: dict, key: str) -> Any:
 
 
 def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], List[Pair]]:
-    """Parse the project record in airtable to Billinge group format. Return a key-value pair of the project and a list of key-value pairs of the people doc and institution doc in the project. The record should be denormalized at first.
+    """Parse the project record in airtable to Billinge group format.
+
+    Return a key-value pair of the project and a list of key-value pairs of the people doc and institution doc
+    in the project. The record should be denormalized at first.
 
     Parameters
     ----------
