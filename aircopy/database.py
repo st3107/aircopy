@@ -140,7 +140,8 @@ class DataBase:
     def __init__(self, base_id: str, tables: List[str] = ('Projects', 'People', 'Institutions'),
                  api_token: str = None):
         """
-        Initiate the class. Attributes will be added as the name of the table and its corresponding Airtable object.
+        Initiate the class. Attributes will be added as the name of the table and its corresponding Airtable
+        object.
 
         Parameters
         ----------
