@@ -97,9 +97,9 @@ def aircopy(add_info: dict = None, max_records: int = None, view: int = None, pa
         )
     db = DataBase(base_id, api_token=api_token)
     projects, people, institutions = db.get_projecta(add_info, **options)
-    io.write_docs_to_yaml('airtable_projects.yaml', projects)
-    io.write_docs_to_yaml('airtable_people.yaml', people)
-    io.write_docs_to_yaml('airtable_institutions.yaml', institutions)
+    io.write_docs_to_yaml('airtable_projecta.yml', projects)
+    io.write_docs_to_yaml('airtable_contacts.yml', people)
+    io.write_docs_to_yaml('airtable_institutions.yml', institutions)
     return
 
 
