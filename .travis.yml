@@ -17,4 +17,4 @@ install:
   # Install extra requirements for running tests and building docs.
   - pip install -r requirements-dev.txt
 
-script: build.sh
+script: bash ./build.sh
