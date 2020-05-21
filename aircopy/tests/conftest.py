@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pathlib import Path
 from typing import Union
 
@@ -41,57 +40,52 @@ DB = {
     'id': 'rec6UVonazWUS1h94'
 }
 
-PROJECT = OrderedDict(
-    [
-        ('begin_date', '2019-03-04'),
-        ('collaborators', ['rnangah']),
-        ('description', 'I am from Cameroon, currently working as a research '
-                        'assistant for the Ministry of Scientific Research and '
-                        'Innovation, and doing my PhD at the Department of '
-                        'Inorganic Chemistry, University of Yaounde I, Yaounde, '
-                        'Cameroon. '),
-        ('grants', ['dmrefcheme16']),
-        ('group_members', ['sstao']),
-        ('lead', 'sstao'),
-        ('log_url', ''),
-        ('ana_repo_url',
-         'http://gitlab.thebillingegroup.com/analysis/19st_sponge'),
-        ('man_repo_url',
-         'http://gitlab.thebillingegroup.com/papers/19st_sponge'),
-        ('milestones',
-         [
-             OrderedDict([('audience',
-                           ['pi', 'lead', 'group members', 'collaborators']),
-                          ('due_date', '2019-03-11'),
-                          ('name', 'Kick off meeting'),
-                          ('objective', 'roll out of project to team'),
-                          ('status', 'proposed')]),
-             OrderedDict([('audience', ['pi', 'lead', 'group members']),
-                          ('due_date', '2019-03-18'),
-                          ('name', 'Project lead presentation'),
-                          ('objective',
-                           'lead presents background reading and initial '
-                           'project plan'),
-                          ('status', 'proposed')]),
-             OrderedDict([('audience', ['pi', 'lead', 'group members']),
-                          ('due_date', '2019-04-01'),
-                          ('name', 'planning meeting'),
-                          ('objective', 'develop a detailed plan with dates'),
-                          ('status', 'proposed')]),
-             OrderedDict([('audience',
-                           ['pi', 'lead', 'group members', 'collaborators']),
-                          ('due_date', '2020-03-03'),
-                          ('name', 'submission'),
-                          ('objective',
-                           'submit the paper, release the code, whatever'),
-                          ('status', 'proposed')])
-         ]
-         ),
-        ('name', ''),
-        ('pi_id', 'sbillinge'),
-        ('status', '6 Report Sent')
-    ]
-)
+PROJECT = {
+    'ana_repo_url': 'http://gitlab.thebillingegroup.com/analysis/19st_sponge',
+    'begin_date': '2019-03-04',
+    'collaborators': ['rnangah'],
+    'deliverable': {'audience': ['pi', 'lead', 'group members', 'collaborators'],
+                    'due_date': '2020-03-03',
+                    'platform': 'description of how and where the audience will '
+                                'access the deliverable.  Journal if it is a '
+                                'paper',
+                    'roll_out': ['steps that the audience will take to access and '
+                                 'interact with the deliverable',
+                                 'not needed for paper submissions'],
+                    'scope': ['UCs that are supported or some other scope '
+                              'description if it is software',
+                              'sketch of science story if it is paper'],
+                    'status': 'proposed',
+                    'success_def': 'audience is happy'},
+    'description': 'I am from Cameroon, currently working as a research assistant '
+                   'for the Ministry of Scientific Research and Innovation, and '
+                   'doing my PhD at the Department of Inorganic Chemistry, '
+                   'University of Yaounde I, Yaounde, Cameroon. ',
+    'grants': ['dmrefcheme16'],
+    'group_members': ['sstao'],
+    'lead': 'sstao',
+    'log_url': '',
+    'man_repo_url': 'http://gitlab.thebillingegroup.com/papers/19st_sponge',
+    'milestones': [{'audience': ['pi', 'lead', 'group members', 'collaborators'],
+                    'due_date': '2019-03-11',
+                    'name': 'Kick off meeting',
+                    'objective': 'roll out of project to team',
+                    'status': 'proposed'},
+                   {'audience': ['pi', 'lead', 'group members'],
+                    'due_date': '2019-03-18',
+                    'name': 'project lead presentation',
+                    'objective': 'lead presents background reading and initial '
+                                 'project plan',
+                    'status': 'proposed'},
+                   {'audience': ['pi', 'lead', 'group members'],
+                    'due_date': '2019-04-01',
+                    'name': 'planning meeting',
+                    'objective': 'develop a detailed plan with dates',
+                    'status': 'proposed'}],
+    'name': '',
+    'pi_id': 'sbillinge',
+    'status': '6 Report Sent'
+}
 
 
 @pytest.fixture
@@ -100,7 +94,7 @@ def fake_db() -> dict:
 
 
 @pytest.fixture
-def example_project() -> OrderedDict:
+def example_project() -> dict:
     return PROJECT
 
 

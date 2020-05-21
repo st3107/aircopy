@@ -1,41 +1,11 @@
 """Tools used in the module."""
-import copy
-from datetime import datetime, timedelta
-from typing import List, Iterable, Union
+
+from datetime import datetime
+from typing import Iterable, Union
 
 from nameparser import HumanName
 
 from aircopy.datatype import Record
-
-MILESTONES_TEMPLATE = [
-    {
-        'audience': ['pi', 'lead', 'group members', 'collaborators'],
-        'due_date': timedelta(days=7),
-        'name': 'Kick off meeting',
-        'objective': 'roll out of project to team',
-        'status': 'proposed'
-    },
-    {
-        'audience': ['pi', 'lead', 'group members'],
-        'due_date': timedelta(days=14),
-        'name': 'Project lead presentation',
-        'objective': 'lead presents background reading and initial project plan',
-        'status': 'proposed'
-    },
-    {
-        'audience': ['pi', 'lead', 'group members'],
-        'due_date': timedelta(days=28),
-        'name': 'planning meeting',
-        'objective': 'develop a detailed plan with dates',
-        'status': 'proposed'
-    },
-    {
-        'audience': ['pi', 'lead', 'group members', 'collaborators'],
-        'due_date': timedelta(days=365),
-        'name': 'submission',
-        'objective': 'submit the paper, release the code, whatever',
-        'status': 'proposed'}
-]
 
 SPECIAL_ID = {
     'Songsheng Tao': 'sstao'
@@ -50,18 +20,6 @@ def gen_person_id(name: str) -> Union[str, None]:
         return SPECIAL_ID.get(name)
     hn = HumanName(name)
     return '{}{}'.format(hn.first[0], hn.last).lower()
-
-
-def auto_gen_milestons(start_date: str, template: List[dict] = None) -> List[dict]:
-    """Automatically generate the milestones list according to the template."""
-    if template is None:
-        template = copy.deepcopy(MILESTONES_TEMPLATE)
-    start_date = datetime.strptime(start_date, '%Y-%m-%d')
-    for milestone in template:
-        time_gap = milestone['due_date']
-        due_date = start_date + time_gap
-        milestone['due_date'] = due_date.strftime('%Y-%m-%d')
-    return template
 
 
 def tag_date(record: dict, turn_off: tuple = ()):

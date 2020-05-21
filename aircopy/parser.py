@@ -3,6 +3,7 @@ database standard."""
 import uuid
 from typing import List, Any, Tuple
 
+import aircopy.autogen as autogen
 import aircopy.tools as tools
 from aircopy.datatype import Record, Pair
 
@@ -72,7 +73,8 @@ def parse_project(record: Record, add_info: dict) -> Tuple[Pair, List[Pair], Lis
         'log_url': _retrieve(add_info, 'log_url'),
         'ana_repo_url': record.get('Link to Analysis'),
         'man_repo_url': record.get('Link to Paper'),
-        'milestones': tools.auto_gen_milestons(record.get('Start Date')),
+        'deliverable': autogen.auto_gen_deliverable(record.get('Start Date')),
+        'milestones': autogen.auto_gen_milestons(record.get('Start Date')),
         'name': _retrieve(add_info, 'name'),
         'pi_id': _retrieve(add_info, 'pi_id'),
         'status': record.get('Status')
