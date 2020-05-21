@@ -6,15 +6,15 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+env:
+  global:
+    # Doctr deploy key for st3107/aircopy
+    - secure: "Gc/UxkRBqjMdhmgumk6KYQzOmFDOwBEwfk3KWfhCwcn+YEFSlsNYLTBev01HCYjRNz6t5iDWWfyJC5e6aKL6iJgPAoU2/Hyc7qpYomLgijFPi2hj/BtnDQGz32yLRRpUXE+s2tkzRrRY07J50QwQCXxvN53PlxTs42kGLm5oWmQLjNlL27nMG024YcuxKMqozDgu43hCC7eGdj+X/QjbZBG+DJQyjTyXn13FZ/5+RiD8tr9npDqZ7ShEKjbG9NEjJU0NPBfEXahcrsAadC6rRtRpxoLPTKUPO1GmxBvYfK7lmQWn9O25BTYAhbedbKsBm7v2oxcxQkf1XXMOb1opruTYZXA8i171NwyT/Uwvrp9RcJV8fgd3WHgy2C8Gda/mDQsa8qLhrK0MHshaUxh/9eyyJCOW5n4Kzr8wggv+txG6MVYBYWr6lLMDXWNAXq8k9TfCN50q/X/fjBD6kiT8lyzRbOxL/G9LJUza/gL1iZXXNgepnPxuknd4WW9ziAhmfmDHdcD/SImt8tuJedyEF5dYahvkdDEcbwJY2ZTOnQj9NQ/QFwyHr4L3YE7flrd4Hf1AlvkrI4uHljvfA3vd7CPO5YK95bRaRl/BSghPQeg6Jjh2nQtskpz+ZHjCuzw3ulyZUtzqIRN8dUHXJHM3RX6zhJFyOfpOcRT4q+vkpzs="
+
 install:
   # Install this package and the packages listed in requirements.txt.
   - pip install .
   # Install extra requirements for running tests and building docs.
   - pip install -r requirements-dev.txt
 
-script:
-  - coverage run -m pytest  # Run the tests and check for test coverage.
-  - coverage report -m  # Generate test coverage report.
-  - codecov  # Upload the report to codecov.
-  - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
-  - make -C docs html  # Build the documentation.
+script: build.sh
