@@ -8,5 +8,5 @@ make -C docs html      # Build the documentation.
 if [ "$TRAVIS_BRANCH" == 'master' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ]; then # if change on master and not PR
   set -e
   pip install doctr
-  doctr deploy . --built-docs ./build/html
+  doctr deploy . --built-docs build/html
 fi
